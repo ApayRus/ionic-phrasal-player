@@ -1,0 +1,7 @@
+{
+  "name": "vtt-phrasal-player",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
