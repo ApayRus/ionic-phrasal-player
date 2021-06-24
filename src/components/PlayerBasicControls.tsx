@@ -1,4 +1,3 @@
-import Player from './playerClass'
 import { IonRange, IonIcon, IonButton } from '@ionic/react'
 import {
 	playOutline as playIcon,
@@ -7,17 +6,17 @@ import {
 	playBackOutline as playBackIcon,
 	chevronDownOutline as chevronIcon
 } from 'ionicons/icons/'
-import { PlayerState } from './MediaPlayer'
+import { PlayerState, PlayerExternalHandlers } from './MediaPlayer'
 import { formatSecondsToTime } from 'frazy-parser'
-import './PlayerControls.css'
+import './PlayerBasicControls.css'
 
 interface playerControlProps {
-	playerRef: Player | null
+	playerHandlers: PlayerExternalHandlers
 	playerState: PlayerState
 }
 
 const PlayerControls: React.FC<playerControlProps> = props => {
-	const { playerRef, playerState } = props
+	const { playerHandlers, playerState } = props
 
 	const { currentTime, duration, isPlaying, playbackRate } = playerState
 
@@ -26,8 +25,8 @@ const PlayerControls: React.FC<playerControlProps> = props => {
 
 	const handleSeek = (e: CustomEvent): void => {
 		const newTime = e.detail.value
-		if (playerRef && Math.abs(newTime - playerState.currentTime)) {
-			playerRef.seek(newTime)
+		if (Math.abs(newTime - playerState.currentTime)) {
+			playerHandlers.seek(newTime)
 		}
 	}
 
@@ -49,7 +48,7 @@ const PlayerControls: React.FC<playerControlProps> = props => {
 					<IonButton
 						fill='clear'
 						size='small'
-						onClick={() => playerRef?.playMinus10()}
+						onClick={() => playerHandlers.playMinus10()}
 					>
 						<IonIcon icon={playBackIcon} />
 					</IonButton>
@@ -57,7 +56,7 @@ const PlayerControls: React.FC<playerControlProps> = props => {
 						<IonButton
 							fill='clear'
 							size='small'
-							onClick={() => playerRef?.pause()}
+							onClick={() => playerHandlers.pause()}
 						>
 							<IonIcon icon={pauseIcon} />
 						</IonButton>
@@ -65,7 +64,7 @@ const PlayerControls: React.FC<playerControlProps> = props => {
 						<IonButton
 							fill='clear'
 							size='small'
-							onClick={() => playerRef?.play()}
+							onClick={() => playerHandlers.play()}
 						>
 							<IonIcon icon={playIcon} />
 						</IonButton>
@@ -74,7 +73,7 @@ const PlayerControls: React.FC<playerControlProps> = props => {
 					<IonButton
 						fill='clear'
 						size='small'
-						onClick={() => playerRef?.playPlus10()}
+						onClick={() => playerHandlers.playPlus10()}
 					>
 						<IonIcon icon={playForwardIcon} />
 					</IonButton>
@@ -83,7 +82,7 @@ const PlayerControls: React.FC<playerControlProps> = props => {
 					<IonButton
 						fill='clear'
 						size='small'
-						onClick={() => playerRef?.changeRate()}
+						onClick={() => playerHandlers.changeRate()}
 						className='playbackRateButton'
 					>
 						<span className='smallText'>x{playbackRate}</span>
@@ -91,7 +90,7 @@ const PlayerControls: React.FC<playerControlProps> = props => {
 					<IonButton
 						fill='clear'
 						size='small'
-						onClick={() => playerRef?.toggleVideo()}
+						onClick={() => playerHandlers.toggleVideo()}
 						className='chevronButton'
 					>
 						<span className='smallText'>
