@@ -1,0 +1,31 @@
+.leftBlock,
+.rightBlock {
+	flex: 1;
+}
+.centerBlock {
+	flex: 2;
+}
+.smallText {
+	font-size: x-small;
+	color: grey;
+	text-transform: lowercase;
+}
+.controlsContainer {
+	display: flex;
+	align-items: center;
+	height: 24px;
+}
+
+.playbackRateButton,
+.chevronButton {
+	width: 30px;
+}
+
+ion-range {
+	--height: 0px;
+	--knob-background: #3880ff;
+	--knob-size: 10px;
+	/* border-color: 'red';
+	border-width: 2px;
+	border-style: solid; */
+}
