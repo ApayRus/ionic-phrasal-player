@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useRef, useState, useEffect, useMemo } from 'react'
 import PlayerBasicControls from './PlayerBasicControls'
 import PhrasesBlock from './PhrasesBlock'
 import {
@@ -25,7 +25,14 @@ const MediaPlayer: React.FC<PlayerProps> = props => {
 		currentPhraseNum: 0,
 		hideVideo: false
 	})
-	const { currentPhraseNum } = playerState
+	const {
+		currentPhraseNum,
+		duration,
+		currentTime,
+		playbackRate,
+		hideVideo,
+		isPlaying
+	} = playerState
 	useEffect(() => {
 		const currentPhraseY = phraseRefs.current[currentPhraseNum].offsetTop
 		contentRef?.current?.scrollToPoint(null, currentPhraseY - 300, 1000)
@@ -73,16 +80,25 @@ const MediaPlayer: React.FC<PlayerProps> = props => {
 	const pause = () => {
 		mediaRef.current!.pause()
 	}
-	const seek = (time: number) => {
-		mediaRef.current!.currentTime = time
+
+	const syncCurrentPhraseNum = (time: number) => {
 		const currentPhraseNum = findCurrentPhraseNum(phrases, time)
 		setPlayerState(prevState => ({ ...prevState, currentPhraseNum }))
 	}
+
+	const seek = (time: number) => {
+		mediaRef.current!.currentTime = time
+		syncCurrentPhraseNum(time)
+	}
 	const playPlus10 = () => {
-		mediaRef.current!.currentTime = mediaRef.current!.currentTime + 10
+		const time = mediaRef.current!.currentTime + 10
+		mediaRef.current!.currentTime = time
+		syncCurrentPhraseNum(time)
 	}
 	const playMinus10 = () => {
-		mediaRef.current!.currentTime = mediaRef.current!.currentTime - 10
+		const time = mediaRef.current!.currentTime - 10
+		mediaRef.current!.currentTime = time
+		syncCurrentPhraseNum(time)
 	}
 	const changeRate = () => {
 		mediaRef.current!.playbackRate = mediaRef.current!.playbackRate + 0.25
@@ -134,7 +150,13 @@ const MediaPlayer: React.FC<PlayerProps> = props => {
 				>
 					<source {...{ src }} />
 				</video>
-				<PlayerBasicControls {...{ playerHandlers, playerState }} />
+				{useMemo(
+					() => (
+						<PlayerBasicControls {...{ playerHandlers, playerState }} />
+					),
+					// eslint-disable-next-line react-hooks/exhaustive-deps
+					[duration, currentTime, playbackRate, hideVideo, isPlaying]
+				)}
 			</div>
 			<PhrasesBlock {...{ phrases, playerState, phraseRefs }} />
 		</>

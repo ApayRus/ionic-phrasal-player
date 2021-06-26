@@ -94,11 +94,9 @@ const PlayerControls: React.FC<playerBasicControlsProps> = props => {
 						onClick={() => playerHandlers.toggleVideo()}
 						className='chevronButton'
 					>
-						<span className='smallText'>
-							<IonIcon
-								icon={playerState.hideVideo ? chevronDownIcon : chevronUpIcon}
-							/>
-						</span>
+						<IonIcon
+							icon={playerState.hideVideo ? chevronDownIcon : chevronUpIcon}
+						/>
 					</IonButton>
 				</div>
 			</div>

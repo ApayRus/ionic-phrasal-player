@@ -1,13 +1,26 @@
 .root {
-	background-color: whitesmoke;
+	margin-top: -4px;
+	background-color: rgba(0, 0, 0, 0.9);
 }
 
 .leftBlock,
 .rightBlock {
 	flex: 1;
 }
+
+.leftBlock {
+	text-align: left;
+	padding-left: 5px;
+}
+
+.rightBlock {
+	text-align: right;
+	padding-right: 5px;
+}
+
 .centerBlock {
 	flex: 2;
+	text-align: center;
 }
 .smallText {
 	font-size: x-small;
@@ -18,11 +31,16 @@
 	display: flex;
 	align-items: center;
 	height: 24px;
+	margin-top: -7px;
 }
 
 .playbackRateButton,
 .chevronButton {
-	width: 30px;
+	margin: 0;
+	color: grey;
+	padding: 0px;
+	--padding-start: 5px;
+	--padding-end: 5px;
 }
 
 ion-range {
