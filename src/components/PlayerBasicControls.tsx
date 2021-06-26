@@ -4,18 +4,19 @@ import {
 	pauseOutline as pauseIcon,
 	playForwardOutline as playForwardIcon,
 	playBackOutline as playBackIcon,
-	chevronDownOutline as chevronIcon
+	chevronDownOutline as chevronDownIcon,
+	chevronUpOutline as chevronUpIcon
 } from 'ionicons/icons/'
-import { PlayerState, PlayerExternalHandlers } from './MediaPlayer'
+import { PlayerState, PlayerExternalHandlers } from './types'
 import { formatSecondsToTime } from 'frazy-parser'
 import './PlayerBasicControls.css'
 
-interface playerControlProps {
+interface playerBasicControlsProps {
 	playerHandlers: PlayerExternalHandlers
 	playerState: PlayerState
 }
 
-const PlayerControls: React.FC<playerControlProps> = props => {
+const PlayerControls: React.FC<playerBasicControlsProps> = props => {
 	const { playerHandlers, playerState } = props
 
 	const { currentTime, duration, isPlaying, playbackRate } = playerState
@@ -31,7 +32,7 @@ const PlayerControls: React.FC<playerControlProps> = props => {
 	}
 
 	return (
-		<div className='playerControls'>
+		<div className='root'>
 			<IonRange
 				min={0}
 				max={playerState.duration}
@@ -94,7 +95,9 @@ const PlayerControls: React.FC<playerControlProps> = props => {
 						className='chevronButton'
 					>
 						<span className='smallText'>
-							<IonIcon icon={chevronIcon} />
+							<IonIcon
+								icon={playerState.hideVideo ? chevronDownIcon : chevronUpIcon}
+							/>
 						</span>
 					</IonButton>
 				</div>

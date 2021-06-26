@@ -1,0 +1,9 @@
+.phraseBlock {
+	padding: 5px;
+	margin: 5px;
+	border: 1px solid grey;
+}
+
+.active {
+	border-color: #3880ff;
+}

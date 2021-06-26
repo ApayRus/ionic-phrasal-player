@@ -1,43 +1,20 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import PlayerBasicControls from './PlayerBasicControls'
-
-interface PlayerProps {
-	src: string
-}
-
-export interface PlayerState {
-	isPlaying: boolean
-	currentTime: number
-	duration: number
-	isReady: boolean
-	playbackRate: number
-	currentPhraseNum: number
-	hideVideo: boolean
-}
-
-// to pass to children
-export interface PlayerExternalHandlers {
-	play: () => void
-	pause: () => void
-	seek: (time: number) => void
-	playPlus10: () => void
-	playMinus10: () => void
-	changeRate: () => void
-	toggleVideo: () => void
-}
-
-// to use here
-export interface PlayerInternalHandlers {
-	onTimeUpdate: () => void
-	onPlay: () => void
-	onPause: () => void
-	onDurationChange: () => void
-}
+import PhrasesBlock from './PhrasesBlock'
+import {
+	PlayerState,
+	PlayerExternalHandlers,
+	PlayerInternalHandlers,
+	PlayerProps
+} from './types'
+import { findCurrentPhraseNum } from 'frazy-parser'
 
 const MediaPlayer: React.FC<PlayerProps> = props => {
-	const { src } = props
+	const { src, phrases, contentRef } = props
 
 	const mediaRef = useRef<HTMLVideoElement>(null)
+
+	const phraseRefs = useRef<HTMLDivElement[]>([])
 
 	const [playerState, setPlayerState] = useState<PlayerState>({
 		isPlaying: false,
@@ -48,43 +25,34 @@ const MediaPlayer: React.FC<PlayerProps> = props => {
 		currentPhraseNum: 0,
 		hideVideo: false
 	})
+	const { currentPhraseNum } = playerState
+	useEffect(() => {
+		const currentPhraseY = phraseRefs.current[currentPhraseNum].offsetTop
+		contentRef?.current?.scrollToPoint(null, currentPhraseY - 300, 1000)
+	}, [currentPhraseNum])
 
-	const play = () => {
-		if (!mediaRef.current) return
-		mediaRef.current.play()
-	}
-	const pause = () => {
-		if (!mediaRef.current) return
-		mediaRef.current.pause()
-	}
-	const seek = (time: number) => {
-		if (!mediaRef.current) return
-		mediaRef.current.currentTime = time
-	}
-	const playPlus10 = () => {
-		if (!mediaRef.current) return
-		mediaRef.current.currentTime = mediaRef.current.currentTime + 10
-	}
-	const playMinus10 = () => {
-		if (!mediaRef.current) return
-		mediaRef.current.currentTime = mediaRef.current.currentTime - 10
-	}
-	const changeRate = () => {
-		if (!mediaRef.current) return
-		mediaRef.current.playbackRate = mediaRef.current.playbackRate + 0.25
-		if (mediaRef.current.playbackRate > 2) mediaRef.current.playbackRate = 0.25
-		setPlayerState(prevState => {
-			const { playbackRate = 1 } = mediaRef.current || {}
-			return {
-				...prevState,
-				playbackRate
-			}
-		})
-	}
+	// internal handlers (execute here)
+
 	const onTimeUpdate = () => {
-		if (!mediaRef.current) return
-		const { currentTime } = mediaRef.current
+		const { currentTime } = mediaRef.current!
 		setPlayerState(prevState => ({ ...prevState, currentTime }))
+	}
+	const onTimeUpdateWithPhrases = () => {
+		//basic player
+		const { currentTime } = mediaRef.current!
+		setPlayerState(prevState => ({ ...prevState, currentTime }))
+		//phrasal player
+		const { currentPhraseNum } = playerState
+		const { end: currentPhaseEnd } = phrases[playerState.currentPhraseNum] || {}
+		if (
+			currentTime > currentPhaseEnd &&
+			currentPhraseNum < phrases.length - 1
+		) {
+			setPlayerState(prevState => ({
+				...prevState,
+				currentPhraseNum: currentPhraseNum + 1
+			}))
+		}
 	}
 	const onPlay = () => {
 		setPlayerState(prevState => ({ ...prevState, isPlaying: true }))
@@ -93,11 +61,41 @@ const MediaPlayer: React.FC<PlayerProps> = props => {
 		setPlayerState(prevState => ({ ...prevState, isPlaying: false }))
 	}
 	const onDurationChange = () => {
-		if (!mediaRef.current) return
-		const { duration } = mediaRef.current
+		const { duration = 0 } = mediaRef.current!
 		setPlayerState(prevState => ({ ...prevState, duration }))
 	}
 
+	// external handlers (execute in children)
+
+	const play = () => {
+		mediaRef.current!.play()
+	}
+	const pause = () => {
+		mediaRef.current!.pause()
+	}
+	const seek = (time: number) => {
+		mediaRef.current!.currentTime = time
+		const currentPhraseNum = findCurrentPhraseNum(phrases, time)
+		setPlayerState(prevState => ({ ...prevState, currentPhraseNum }))
+	}
+	const playPlus10 = () => {
+		mediaRef.current!.currentTime = mediaRef.current!.currentTime + 10
+	}
+	const playMinus10 = () => {
+		mediaRef.current!.currentTime = mediaRef.current!.currentTime - 10
+	}
+	const changeRate = () => {
+		mediaRef.current!.playbackRate = mediaRef.current!.playbackRate + 0.25
+		if (mediaRef.current!.playbackRate > 2)
+			mediaRef.current!.playbackRate = 0.25
+		setPlayerState(prevState => {
+			const { playbackRate = 1 } = mediaRef.current! || {}
+			return {
+				...prevState,
+				playbackRate
+			}
+		})
+	}
 	const toggleVideo = () => {
 		setPlayerState(prevState => ({
 			...prevState,
@@ -116,7 +114,7 @@ const MediaPlayer: React.FC<PlayerProps> = props => {
 	}
 
 	const playerIntHandlers: PlayerInternalHandlers = {
-		onTimeUpdate,
+		onTimeUpdate: phrases.length > 0 ? onTimeUpdateWithPhrases : onTimeUpdate,
 		onPlay,
 		onPause,
 		onDurationChange
@@ -124,18 +122,21 @@ const MediaPlayer: React.FC<PlayerProps> = props => {
 
 	return (
 		<>
-			<video
-				playsInline
-				ref={mediaRef}
-				style={{
-					width: '100%',
-					display: playerState.hideVideo ? 'none' : 'unset'
-				}}
-				{...playerIntHandlers}
-			>
-				<source {...{ src }} />
-			</video>
-			<PlayerBasicControls {...{ playerHandlers, playerState }} />
+			<div style={{ position: 'sticky', top: 0 }}>
+				<video
+					playsInline
+					ref={mediaRef}
+					style={{
+						width: '100%',
+						display: playerState.hideVideo ? 'none' : 'unset'
+					}}
+					{...playerIntHandlers}
+				>
+					<source {...{ src }} />
+				</video>
+				<PlayerBasicControls {...{ playerHandlers, playerState }} />
+			</div>
+			<PhrasesBlock {...{ phrases, playerState, phraseRefs }} />
 		</>
 	)
 }
