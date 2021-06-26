@@ -8,6 +8,7 @@ export interface PhrasesBlockProps {
 	phrases: Phrase[]
 	phraseRefs: React.MutableRefObject<HTMLDivElement[]>
 	playerState: PlayerState
+	playerHandlers: PlayerExternalHandlers
 }
 
 export interface PlayerState {
@@ -18,6 +19,7 @@ export interface PlayerState {
 	playbackRate: number
 	currentPhraseNum: number
 	hideVideo: boolean
+	playOnePhrase: boolean
 }
 
 // to pass to children
@@ -29,6 +31,7 @@ export interface PlayerExternalHandlers {
 	playMinus10: () => void
 	changeRate: () => void
 	toggleVideo: () => void
+	playPhrase: (phraseNum: number) => void
 }
 
 // to use here

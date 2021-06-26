@@ -2,7 +2,7 @@ import { PhrasesBlockProps } from './types'
 import './PhrasesBlock.css'
 
 const PhrasesBlock: React.FC<PhrasesBlockProps> = props => {
-	const { phrases, phraseRefs, playerState } = props
+	const { phrases, phraseRefs, playerState, playerHandlers } = props
 	const { currentPhraseNum } = playerState
 
 	return (
@@ -16,6 +16,7 @@ const PhrasesBlock: React.FC<PhrasesBlockProps> = props => {
 						ref={el => {
 							phraseRefs.current[index] = el!
 						}}
+						onClick={() => playerHandlers.playPhrase(index)}
 					>
 						<div className={isActive ? 'phraseBlock active' : 'phraseBlock'}>
 							{index + '. ' + elem.text}

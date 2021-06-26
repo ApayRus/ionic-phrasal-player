@@ -12,9 +12,9 @@ import { findCurrentPhraseNum } from 'frazy-parser'
 const MediaPlayer: React.FC<PlayerProps> = props => {
 	const { src, phrases, contentRef } = props
 
-	const mediaRef = useRef<HTMLVideoElement>(null)
-
-	const phraseRefs = useRef<HTMLDivElement[]>([])
+	const mediaRef = useRef<HTMLVideoElement>(null) // to control media element (pause, play)
+	const stickyPlayerContainerRef = useRef<HTMLDivElement>(null) // to know size of player container
+	const phraseRefs = useRef<HTMLDivElement[]>([]) //to pass to child to know each phrase size (offsetTop)
 
 	const [playerState, setPlayerState] = useState<PlayerState>({
 		isPlaying: false,
@@ -23,28 +23,40 @@ const MediaPlayer: React.FC<PlayerProps> = props => {
 		isReady: false,
 		playbackRate: 1,
 		currentPhraseNum: 0,
-		hideVideo: false
+		hideVideo: false,
+		playOnePhrase: false
 	})
+
 	const {
 		currentPhraseNum,
 		duration,
 		currentTime,
 		playbackRate,
 		hideVideo,
-		isPlaying
+		isPlaying,
+		playOnePhrase
 	} = playerState
-	useEffect(() => {
+
+	const scrollPhrasesBlock = (currentPhraseNum: number, delta: number) => {
+		const { height: videoHeight = 0 } =
+			stickyPlayerContainerRef.current?.getBoundingClientRect() || {}
 		const currentPhraseY = phraseRefs.current[currentPhraseNum].offsetTop
-		contentRef?.current?.scrollToPoint(null, currentPhraseY - 300, 1000)
+		contentRef?.current?.scrollToPoint(
+			null,
+			currentPhraseY - videoHeight + delta,
+			1000
+		)
+	}
+
+	useEffect(() => {
+		if (!playOnePhrase) {
+			scrollPhrasesBlock(currentPhraseNum, -2)
+		}
 	}, [currentPhraseNum])
 
 	// internal handlers (execute here)
 
 	const onTimeUpdate = () => {
-		const { currentTime } = mediaRef.current!
-		setPlayerState(prevState => ({ ...prevState, currentTime }))
-	}
-	const onTimeUpdateWithPhrases = () => {
 		//basic player
 		const { currentTime } = mediaRef.current!
 		setPlayerState(prevState => ({ ...prevState, currentTime }))
@@ -61,11 +73,24 @@ const MediaPlayer: React.FC<PlayerProps> = props => {
 			}))
 		}
 	}
+	const onTimeUpdateOnePhrase = () => {
+		const { currentTime } = mediaRef.current!
+		setPlayerState(prevState => ({ ...prevState, currentTime }))
+		const { end: currentPhaseEnd } = phrases[currentPhraseNum] || {}
+
+		if (currentTime >= currentPhaseEnd) {
+			pause()
+		}
+	}
 	const onPlay = () => {
 		setPlayerState(prevState => ({ ...prevState, isPlaying: true }))
 	}
 	const onPause = () => {
-		setPlayerState(prevState => ({ ...prevState, isPlaying: false }))
+		setPlayerState(prevState => ({
+			...prevState,
+			isPlaying: false,
+			playOnePhrase: false
+		}))
 	}
 	const onDurationChange = () => {
 		const { duration = 0 } = mediaRef.current!
@@ -100,6 +125,16 @@ const MediaPlayer: React.FC<PlayerProps> = props => {
 		mediaRef.current!.currentTime = time
 		syncCurrentPhraseNum(time)
 	}
+	const playPhrase = (phraseNum: number) => {
+		const { start } = phrases[phraseNum]
+		setPlayerState(prevState => ({
+			...prevState,
+			currentPhraseNum: phraseNum,
+			playOnePhrase: true
+		}))
+		mediaRef.current!.currentTime = start
+		mediaRef.current!.play()
+	}
 	const changeRate = () => {
 		mediaRef.current!.playbackRate = mediaRef.current!.playbackRate + 0.25
 		if (mediaRef.current!.playbackRate > 2)
@@ -113,10 +148,15 @@ const MediaPlayer: React.FC<PlayerProps> = props => {
 		})
 	}
 	const toggleVideo = () => {
-		setPlayerState(prevState => ({
-			...prevState,
-			hideVideo: !prevState.hideVideo
-		}))
+		setPlayerState(prevState => {
+			const hideVideo = !prevState.hideVideo
+			scrollPhrasesBlock(currentPhraseNum, prevState.hideVideo ? -2 : -8)
+
+			return {
+				...prevState,
+				hideVideo
+			}
+		})
 	}
 
 	const playerHandlers: PlayerExternalHandlers = {
@@ -126,11 +166,12 @@ const MediaPlayer: React.FC<PlayerProps> = props => {
 		playPlus10,
 		playMinus10,
 		changeRate,
-		toggleVideo
+		toggleVideo,
+		playPhrase
 	}
 
 	const playerIntHandlers: PlayerInternalHandlers = {
-		onTimeUpdate: phrases.length > 0 ? onTimeUpdateWithPhrases : onTimeUpdate,
+		onTimeUpdate: playOnePhrase ? onTimeUpdateOnePhrase : onTimeUpdate,
 		onPlay,
 		onPause,
 		onDurationChange
@@ -138,7 +179,11 @@ const MediaPlayer: React.FC<PlayerProps> = props => {
 
 	return (
 		<>
-			<div style={{ position: 'sticky', top: 0 }}>
+			<div
+				style={{ position: 'sticky', top: 0 }}
+				className='stickyPlayerContainer'
+				ref={stickyPlayerContainerRef}
+			>
 				<video
 					playsInline
 					ref={mediaRef}
@@ -158,7 +203,7 @@ const MediaPlayer: React.FC<PlayerProps> = props => {
 					[duration, currentTime, playbackRate, hideVideo, isPlaying]
 				)}
 			</div>
-			<PhrasesBlock {...{ phrases, playerState, phraseRefs }} />
+			<PhrasesBlock {...{ phrases, playerState, phraseRefs, playerHandlers }} />
 		</>
 	)
 }
