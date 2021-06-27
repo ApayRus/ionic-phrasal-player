@@ -11,6 +11,11 @@ export interface PhrasesBlockProps {
 	playerHandlers: PlayerExternalHandlers
 }
 
+export interface PlayerBasicControlsProps {
+	playerHandlers: PlayerExternalHandlers
+	playerState: PlayerState
+}
+
 export interface PlayerState {
 	isPlaying: boolean
 	currentTime: number
@@ -32,6 +37,9 @@ export interface PlayerExternalHandlers {
 	changeRate: () => void
 	toggleVideo: () => void
 	playPhrase: (phraseNum: number) => void
+	playNextPhrase: () => void
+	playPrevPhrase: () => void
+	playCurrentPhrase: () => void
 }
 
 // to use here

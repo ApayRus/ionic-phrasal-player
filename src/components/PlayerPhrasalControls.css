@@ -1,0 +1,8 @@
+.playerPhrasalControlsContainer {
+	display: flex;
+}
+
+.playerPhrasalControlsContainer ion-button {
+	height: unset;
+	margin-bottom: 1px;
+}
