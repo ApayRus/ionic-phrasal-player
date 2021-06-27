@@ -1,9 +1,24 @@
 .phraseBlock {
 	padding: 5px;
 	margin: 5px;
-	border: 1px solid grey;
+	/* border: 1px solid rgba(255, 255, 255, 1); */
+	border-radius: 10px;
+}
+.active {
+	position: relative;
+	z-index: -1;
+}
+.active:before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: -1;
+	background: #3880ff;
+	filter: blur(10px);
 }
 
-.active {
-	border-color: #3880ff;
+.phraseText {
 }

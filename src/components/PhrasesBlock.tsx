@@ -19,7 +19,7 @@ const PhrasesBlock: React.FC<PhrasesBlockProps> = props => {
 						onClick={() => playerHandlers.playPhrase(index)}
 					>
 						<div className={isActive ? 'phraseBlock active' : 'phraseBlock'}>
-							{index + '. ' + elem.text}
+							<div className='phraseText'>{index + '. ' + elem.text}</div>
 						</div>
 					</div>
 				)
