@@ -7,16 +7,11 @@ import {
 	chevronDownOutline as chevronDownIcon,
 	chevronUpOutline as chevronUpIcon
 } from 'ionicons/icons/'
-import { PlayerState, PlayerExternalHandlers } from './types'
+import { PlayerBasicControlsProps } from './types'
 import { formatSecondsToTime } from 'frazy-parser'
 import './PlayerBasicControls.css'
 
-interface playerBasicControlsProps {
-	playerHandlers: PlayerExternalHandlers
-	playerState: PlayerState
-}
-
-const PlayerControls: React.FC<playerBasicControlsProps> = props => {
+const PlayerControls: React.FC<PlayerBasicControlsProps> = props => {
 	const { playerHandlers, playerState } = props
 
 	const { currentTime, duration, isPlaying, playbackRate } = playerState
