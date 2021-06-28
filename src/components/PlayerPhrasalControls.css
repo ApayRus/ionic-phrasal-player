@@ -2,6 +2,11 @@
 	display: flex;
 }
 
+.playerPhrasalControlsContainer ion-icon {
+	background-color: white;
+	border-radius: 10px;
+}
+
 .playerPhrasalControlsContainer ion-button {
 	height: unset;
 	margin-bottom: 1px;
