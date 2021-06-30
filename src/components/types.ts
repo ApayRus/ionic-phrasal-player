@@ -1,13 +1,13 @@
 export interface PlayerProps {
-	src: string
+	mediaLink: string
 	phrases: Phrase[]
-	phrasesTr: PhraseTr[]
+	phrasesTr?: PhraseTr[]
 	contentRef: React.RefObject<HTMLIonContentElement>
 }
 
 export interface PhrasesBlockProps {
 	phrases: Phrase[]
-	phrasesTr: PhraseTr[]
+	phrasesTr?: PhraseTr[]
 	phraseRefs: React.MutableRefObject<HTMLDivElement[]>
 	playerState: PlayerState
 	playerHandlers: PlayerExternalHandlers
@@ -66,4 +66,10 @@ export interface PhraseTr {
 	id: string
 	identifier?: string
 	text: string
+}
+
+export interface Chapter {
+	start?: number
+	end?: number
+	title: string
 }

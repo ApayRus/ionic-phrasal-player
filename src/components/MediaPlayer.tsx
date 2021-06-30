@@ -12,7 +12,7 @@ import { findCurrentPhraseNum } from 'frazy-parser'
 import './MediaPlayer.css'
 
 const MediaPlayer: React.FC<PlayerProps> = props => {
-	const { src, phrases, phrasesTr, contentRef } = props
+	const { mediaLink, phrases, phrasesTr, contentRef } = props
 
 	const mediaRef = useRef<HTMLVideoElement>(null) // to control media element (pause, play)
 	const stickyPlayerContainerRef = useRef<HTMLDivElement>(null) // to know size of player container
@@ -219,7 +219,7 @@ const MediaPlayer: React.FC<PlayerProps> = props => {
 					}}
 					{...playerIntHandlers}
 				>
-					<source {...{ src }} />
+					<source src={mediaLink} />
 				</video>
 				{useMemo(
 					() => (

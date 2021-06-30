@@ -12,7 +12,7 @@ const PhrasesBlock: React.FC<PhrasesBlockProps> = props => {
 			{phrases.map((elem, index) => {
 				const isActive = index === currentPhraseNum
 				const { text } = elem
-				const { text: textTr } = phrasesTr[index]
+				const { text: textTr } = phrasesTr?.[index] || {}
 				return (
 					<div
 						className='phraseWrapper'
