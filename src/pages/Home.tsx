@@ -6,7 +6,7 @@ import {
 	IonToolbar
 } from '@ionic/react'
 import { useEffect, useRef, useState } from 'react'
-import { parseSubs, parseChapters } from 'frazy-parser'
+import { parseSubs } from 'frazy-parser'
 import MediaPlayer from '../components/MediaPlayer'
 import './Home.css'
 import { Phrase, PhraseTr } from '../components/types'
@@ -23,7 +23,6 @@ const Home: React.FC = props => {
 	useEffect(() => {
 		const loadData = async () => {
 			const mediaLink = 'http://192.168.0.189:8080/moana320x135.mp4'
-
 			const text = await fetch('http://192.168.0.189:8080/en.vtt').then(res =>
 				res.text()
 			)
@@ -44,16 +43,15 @@ const Home: React.FC = props => {
 				return phrases
 			}
 
-			const phrases = transformSubs(text)
-			const phrasesTr = transformSubs(textTr)
+			const phrases: Phrase[] = transformSubs(text)
+			const phrasesTr: PhraseTr[] = transformSubs(textTr)
 
-			const chapters = parseChapters(text)
-			const chaptersTr = parseChapters(textTr)
-
-			loadedDataRef.current = { mediaLink, phrases, phrasesTr }
+			loadedDataRef.current = {
+				mediaLink,
+				phrases,
+				phrasesTr
+			}
 			setIsDataLoaded(true)
-			console.log('loadedDataRef.current')
-			console.log(loadedDataRef.current)
 		}
 		loadData()
 

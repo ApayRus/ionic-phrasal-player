@@ -1,7 +1,13 @@
 import { Redirect, Route } from 'react-router-dom'
-import { IonApp, IonRouterOutlet } from '@ionic/react'
+import {
+	IonApp,
+	IonRouterOutlet,
+	IonRouterLink,
+	IonSplitPane
+} from '@ionic/react'
 import { IonReactRouter } from '@ionic/react-router'
 import Home from './pages/Home'
+import SideMenu from './components/SideMenu'
 import Filesystem from './pages/Filesystem'
 
 /* Core CSS required for Ionic components to work properly */
@@ -26,17 +32,17 @@ import './theme/variables.css'
 const App: React.FC = () => (
 	<IonApp>
 		<IonReactRouter>
-			<IonRouterOutlet>
-				<Route exact path='/home'>
-					<Home />
-				</Route>
-				<Route exact path='/'>
-					<Redirect to='/home' />
-				</Route>
-				<Route exact path='/filesystem'>
-					<Filesystem />
-				</Route>
-			</IonRouterOutlet>
+			<IonSplitPane contentId='main' when='md'>
+				<SideMenu />
+				<IonRouterOutlet id='main'>
+					<Route exact path='/'>
+						<Home />
+					</Route>
+					<Route exact path='/filesystem'>
+						<Filesystem />
+					</Route>
+				</IonRouterOutlet>
+			</IonSplitPane>
 		</IonReactRouter>
 	</IonApp>
 )

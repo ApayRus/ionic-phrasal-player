@@ -11,3 +11,9 @@
 	height: unset;
 	margin-bottom: 1px;
 }
+
+.playerPhrasalControlsContainer ion-menu-button {
+	/* --background: #3880ff; */
+	color: #3880ff;
+	height: 24px;
+}

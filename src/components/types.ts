@@ -58,6 +58,7 @@ export interface Phrase {
 	id: string
 	identifier?: string
 	text: string
+	voiceName?: string
 }
 
 export interface PhraseTr {
@@ -66,6 +67,7 @@ export interface PhraseTr {
 	id: string
 	identifier?: string
 	text: string
+	voiceName?: string
 }
 
 export interface Chapter {
