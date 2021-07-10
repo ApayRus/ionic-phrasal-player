@@ -10,9 +10,9 @@ const PhrasesBlock: React.FC<PhrasesBlockProps> = props => {
 	return (
 		<div>
 			{phrases.map((elem, index) => {
-				const isActive = index === currentPhraseNum
-				const { text } = elem
-				const { text: textTr } = phrasesTr?.[index] || {}
+				const { text, id } = elem
+				const isActive = +id === currentPhraseNum
+				const { text: textTr } = phrasesTr?.find(elem => elem.id === id) || {}
 				return (
 					<div
 						className='phraseWrapper'
@@ -28,10 +28,10 @@ const PhrasesBlock: React.FC<PhrasesBlockProps> = props => {
 								<IonButton
 									fill='clear'
 									size='small'
-									onClick={() => playerHandlers.playPhrase(index)}
+									onClick={() => playerHandlers.playPhrase(+id)}
 								>
 									<IonIcon icon={playIcon} />
-									{index}
+									{id}
 								</IonButton>
 							</div>
 						</div>

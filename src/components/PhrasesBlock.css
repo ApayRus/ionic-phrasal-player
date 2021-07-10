@@ -13,6 +13,10 @@
 	justify-content: flex-end;
 }
 
+/* .phraseWrapper:nth-child(1) {
+	display: none;
+} */
+
 .phraseBlock.active .textTr,
 .phraseBlock.active .phraseNum {
 	color: lightgray;
