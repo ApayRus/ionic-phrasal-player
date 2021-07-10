@@ -1,3 +1,16 @@
 ion-menu ion-list ion-item ion-label {
 	margin: 0px;
 }
+
+ion-menu ion-list ion-item.active h3 {
+	font-weight: bold;
+	color: #3880ff;
+}
+
+ion-menu ion-list ion-item {
+	border: 1px solid transparent;
+}
+
+.sideMenuHeader {
+	margin-left: 10px;
+}

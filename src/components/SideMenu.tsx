@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
 	IonMenu,
 	IonHeader,
@@ -10,15 +10,11 @@ import {
 	IonLabel
 } from '@ionic/react'
 import { parseChapters } from 'frazy-parser'
-import { Chapter } from './types'
 import './SideMenu.css'
+import appStateStore from '../store/appState'
+import { observer } from 'mobx-react'
 
 const SideMenu: React.FC = () => {
-	const loadedDataRef = useRef<{ chapters: Chapter[]; chaptersTr: Chapter[] }>({
-		chapters: [],
-		chaptersTr: []
-	})
-
 	const [isDataLoaded, setIsDataLoaded] = useState(false)
 
 	useEffect(() => {
@@ -30,10 +26,16 @@ const SideMenu: React.FC = () => {
 				res.text()
 			)
 
-			const chapters = parseChapters(text)
+			const chapters = parseChapters(text).map((elem, index, array) => {
+				const end = elem?.end || array[index + 1]?.start
+				return { ...elem, end }
+			})
+
 			const chaptersTr = parseChapters(textTr)
 
-			loadedDataRef.current = { chapters, chaptersTr }
+			appStateStore.setChapters(chapters)
+			appStateStore.setChaptersTr(chaptersTr)
+
 			setIsDataLoaded(true)
 		}
 		loadData()
@@ -43,23 +45,23 @@ const SideMenu: React.FC = () => {
 		}
 	}, [])
 
-	const { chapters, chaptersTr } = loadedDataRef.current
+	const { chapters, chaptersTr, currentChapterIndex } = appStateStore
 
 	return (
 		<IonMenu side='start' contentId='main' type='overlay'>
-			<IonHeader>
-				<IonToolbar color='primary'>
-					<IonTitle>Chapters</IonTitle>
-				</IonToolbar>
-			</IonHeader>
 			<IonContent>
+				<h3 className='sideMenuHeader'>Chapters</h3>
 				{isDataLoaded && (
 					<IonList>
 						{chapters.map((chapter, index) => {
 							const { title } = chapter
 							const { title: titleTr } = chaptersTr[index]
 							return (
-								<IonItem key={`chapter-${index}`}>
+								<IonItem
+									key={`chapter-${index}`}
+									onClick={() => appStateStore.setCurrentChapterIndex(index)}
+									className={index === currentChapterIndex ? 'active' : ''}
+								>
 									<IonLabel>
 										<h3>{title}</h3>
 										<p>{titleTr}</p>
@@ -74,4 +76,4 @@ const SideMenu: React.FC = () => {
 	)
 }
 
-export default SideMenu
+export default observer(SideMenu)
