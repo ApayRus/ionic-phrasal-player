@@ -27,6 +27,10 @@ export interface PlayerState {
 	currentPhraseNum: number
 	hideVideo: boolean
 	playOnePhrase: boolean
+	/** start time point for chapter/interval display. By default: 0 */
+	start: number
+	/** end time point for chapter/interval display. By default: duration */
+	end: number
 }
 
 // to pass to children

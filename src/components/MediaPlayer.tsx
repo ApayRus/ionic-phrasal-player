@@ -10,9 +10,12 @@ import {
 } from './types'
 import { findCurrentPhraseNum } from 'frazy-parser'
 import './MediaPlayer.css'
+import appState from '../store/appState'
+import { observer } from 'mobx-react'
 
 const MediaPlayer: React.FC<PlayerProps> = props => {
 	const { mediaLink, phrases, phrasesTr, contentRef } = props
+	const { currentChapterIndex, chapters } = appState
 
 	const mediaRef = useRef<HTMLVideoElement>(null) // to control media element (pause, play)
 	const stickyPlayerContainerRef = useRef<HTMLDivElement>(null) // to know size of player container
@@ -26,7 +29,9 @@ const MediaPlayer: React.FC<PlayerProps> = props => {
 		playbackRate: 1,
 		currentPhraseNum: 0,
 		hideVideo: false,
-		playOnePhrase: false
+		playOnePhrase: false,
+		start: 0,
+		end: 1
 	})
 
 	const {
@@ -60,6 +65,20 @@ const MediaPlayer: React.FC<PlayerProps> = props => {
 				: scrollPhrasesBlock(currentPhraseNum, -2)
 		}
 	}, [currentPhraseNum])
+
+	useEffect(() => {
+		const currentChapter = chapters[currentChapterIndex]
+		const { start = 0, end = 0 } = currentChapter || {}
+		setPlayerState(prevState => ({
+			...prevState,
+			start,
+			end
+		}))
+		seek(start)
+		return () => {
+			//	cleanup
+		}
+	}, [currentChapterIndex])
 
 	// internal handlers (execute here)
 
@@ -101,7 +120,7 @@ const MediaPlayer: React.FC<PlayerProps> = props => {
 	}
 	const onDurationChange = () => {
 		const { duration = 0 } = mediaRef.current!
-		setPlayerState(prevState => ({ ...prevState, duration }))
+		setPlayerState(prevState => ({ ...prevState, duration, end: duration }))
 	}
 
 	// external handlers (execute in children)
@@ -249,4 +268,4 @@ const MediaPlayer: React.FC<PlayerProps> = props => {
 	)
 }
 
-export default MediaPlayer
+export default observer(MediaPlayer)

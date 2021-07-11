@@ -14,10 +14,10 @@ import './PlayerBasicControls.css'
 const PlayerControls: React.FC<PlayerBasicControlsProps> = props => {
 	const { playerHandlers, playerState } = props
 
-	const { currentTime, duration, isPlaying, playbackRate } = playerState
+	const { currentTime, isPlaying, playbackRate, start, end } = playerState
 
 	const currentTimeFormatted = formatSecondsToTime(currentTime)
-	const durationFormatted = formatSecondsToTime(duration)
+	const endFormatted = formatSecondsToTime(end)
 
 	const handleSeek = (e: CustomEvent): void => {
 		const newTime = e.detail.value
@@ -29,15 +29,15 @@ const PlayerControls: React.FC<PlayerBasicControlsProps> = props => {
 	return (
 		<div className='root'>
 			<IonRange
-				min={0}
-				max={playerState.duration}
-				value={playerState.currentTime}
+				min={start}
+				max={end}
+				value={currentTime}
 				onIonChange={handleSeek}
 			/>
 			<div className='controlsContainer'>
 				<div className='leftBlock'>
 					<span className='smallText'>
-						{currentTimeFormatted} / {durationFormatted}
+						{currentTimeFormatted} / {endFormatted}
 					</span>
 				</div>
 				<div className='centerBlock'>
