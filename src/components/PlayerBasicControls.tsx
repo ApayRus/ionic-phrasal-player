@@ -21,7 +21,7 @@ const PlayerControls: React.FC<PlayerBasicControlsProps> = props => {
 
 	const handleSeek = (e: CustomEvent): void => {
 		const newTime = e.detail.value
-		if (Math.abs(newTime - playerState.currentTime)) {
+		if (Math.abs(newTime - playerState.currentTime) > 0.3) {
 			playerHandlers.seek(newTime)
 		}
 	}

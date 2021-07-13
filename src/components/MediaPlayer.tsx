@@ -87,8 +87,7 @@ const MediaPlayer: React.FC<PlayerProps> = props => {
 		const { currentTime } = mediaRef.current!
 		setPlayerState(prevState => ({ ...prevState, currentTime }))
 		//phrasal player
-		const { currentPhraseNum } = playerState
-		const { end: currentPhaseEnd } = phrases[playerState.currentPhraseNum] || {}
+		const { end: currentPhaseEnd } = phrases[currentPhraseNum] || {}
 		if (
 			currentTime > currentPhaseEnd &&
 			currentPhraseNum < phrases.length - 1
