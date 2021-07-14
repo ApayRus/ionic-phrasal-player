@@ -11,7 +11,7 @@ import {
 } from '@ionic/react'
 import { parseChapters } from 'frazy-parser'
 import './SideMenu.css'
-import appStateStore from '../store/appState'
+import appState from '../store/appState'
 import { observer } from 'mobx-react'
 
 const SideMenu: React.FC = () => {
@@ -33,8 +33,8 @@ const SideMenu: React.FC = () => {
 
 			const chaptersTr = parseChapters(textTr)
 
-			appStateStore.setChapters(chapters)
-			appStateStore.setChaptersTr(chaptersTr)
+			appState.setChapters(chapters)
+			appState.setChaptersTr(chaptersTr)
 
 			setIsDataLoaded(true)
 		}
@@ -45,7 +45,32 @@ const SideMenu: React.FC = () => {
 		}
 	}, [])
 
-	const { chapters, chaptersTr, currentChapterIndex } = appStateStore
+	/* 
+	useEffect(() => {
+		if (!playOnePhrase) {
+			const currentChapter = chapters[currentChapterIndex]
+			const { start = 0, end = 0 } = currentChapter || {}
+			setPlayerState(prevState => ({
+				...prevState,
+				start,
+				end
+			}))
+			seek(start)
+			return () => {
+				//	cleanup
+			}
+		}
+	}, [currentChapterIndex])
+
+
+	const syncCurrentChapterNum = (time: number) => {
+		const currentChapterNum = findCurrentPhraseNum(chapters, time)
+		console.log('currentChapterNum', currentChapterNum)
+		appState.setCurrentChapterIndex(currentChapterNum)
+	} 
+	*/
+
+	const { chapters, chaptersTr, currentChapterIndex } = appState
 
 	return (
 		<IonMenu side='start' contentId='main' type='overlay'>
@@ -59,7 +84,7 @@ const SideMenu: React.FC = () => {
 							return (
 								<IonItem
 									key={`chapter-${index}`}
-									onClick={() => appStateStore.setCurrentChapterIndex(index)}
+									onClick={() => appState.setCurrentChapterIndex(index)}
 									className={index === currentChapterIndex ? 'active' : ''}
 								>
 									<IonLabel>

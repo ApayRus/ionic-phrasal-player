@@ -7,7 +7,8 @@ import {
 	refreshCircle as repeatOneIcon,
 	repeat as repeatAllIcon,
 	// settings as settingsIcon,
-	menuOutline as menuIcon
+	menuSharp as menuChaptersIcon,
+	bookmarkSharp as menuBookmarksIcon
 } from 'ionicons/icons'
 import { PlayerBasicControlsProps } from './types'
 import './PlayerPhrasalControls.css'
@@ -17,8 +18,11 @@ const PlayerPhrasalControls: React.FC<PlayerBasicControlsProps> = props => {
 	const { isPlaying } = playerState
 	return (
 		<div className='playerPhrasalControlsContainer'>
-			<IonMenuButton style={{ flex: 1 }}>
-				<IonIcon icon={menuIcon} />
+			<IonMenuButton style={{ flex: 1 }} menu='start'>
+				<IonIcon icon={menuChaptersIcon} />
+			</IonMenuButton>
+			<IonMenuButton style={{ flex: 1 }} menu='end'>
+				<IonIcon icon={menuBookmarksIcon} />
 			</IonMenuButton>
 			<div style={{ visibility: 'hidden' }}>
 				<IonButton fill='clear' style={{ flex: 1 }} onClick={() => {}}>
