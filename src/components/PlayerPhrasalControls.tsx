@@ -7,8 +7,8 @@ import {
 	refreshCircle as repeatOneIcon,
 	repeat as repeatAllIcon,
 	// settings as settingsIcon,
-	menuSharp as menuChaptersIcon,
-	bookmarkSharp as menuBookmarksIcon
+	menuOutline as menuChaptersIcon,
+	bookmarkOutline as menuBookmarksIcon
 } from 'ionicons/icons'
 import { PlayerBasicControlsProps } from './types'
 import './PlayerPhrasalControls.css'
