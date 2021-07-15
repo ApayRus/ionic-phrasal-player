@@ -48,7 +48,7 @@ const SideMenu: React.FC = () => {
 	/* 
 	useEffect(() => {
 		if (!playOnePhrase) {
-			const currentChapter = chapters[currentChapterIndex]
+			const currentChapter = chapters[currentChapterNum]
 			const { start = 0, end = 0 } = currentChapter || {}
 			setPlayerState(prevState => ({
 				...prevState,
@@ -60,17 +60,17 @@ const SideMenu: React.FC = () => {
 				//	cleanup
 			}
 		}
-	}, [currentChapterIndex])
+	}, [currentChapterNum])
 
 
 	const syncCurrentChapterNum = (time: number) => {
 		const currentChapterNum = findCurrentPhraseNum(chapters, time)
 		console.log('currentChapterNum', currentChapterNum)
-		appState.setCurrentChapterIndex(currentChapterNum)
+		appState.setCurrentChapterNum(currentChapterNum)
 	} 
 	*/
 
-	const { chapters, chaptersTr, currentChapterIndex } = appState
+	const { chapters, chaptersTr, currentChapterNum } = appState
 
 	return (
 		<IonMenu side='end' contentId='main' type='overlay'>
@@ -84,8 +84,8 @@ const SideMenu: React.FC = () => {
 							return (
 								<IonItem
 									key={`chapter-${index}`}
-									onClick={() => appState.setCurrentChapterIndex(index)}
-									className={index === currentChapterIndex ? 'active' : ''}
+									onClick={() => appState.setCurrentChapterNum(index)}
+									className={index === currentChapterNum ? 'active' : ''}
 								>
 									<IonLabel>
 										<h3>{title}</h3>

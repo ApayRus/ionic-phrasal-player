@@ -15,7 +15,7 @@ import { observer } from 'mobx-react'
 
 const MediaPlayer: React.FC<PlayerProps> = props => {
 	const { mediaLink, phrases, phrasesTr, contentRef } = props
-	const { currentChapterIndex, chapters } = appState
+	const { currentChapterNum, chapters } = appState
 
 	const mediaRef = useRef<HTMLVideoElement>(null) // to control media element (pause, play)
 	const stickyPlayerContainerRef = useRef<HTMLDivElement>(null) // to know size of player container
@@ -67,7 +67,7 @@ const MediaPlayer: React.FC<PlayerProps> = props => {
 	}, [currentPhraseNum])
 
 	useEffect(() => {
-		const currentChapter = chapters[currentChapterIndex]
+		const currentChapter = chapters[currentChapterNum]
 		const { start = 0, end = 0 } = currentChapter || {}
 		setPlayerState(prevState => ({
 			...prevState,
@@ -78,7 +78,7 @@ const MediaPlayer: React.FC<PlayerProps> = props => {
 		return () => {
 			//	cleanup
 		}
-	}, [currentChapterIndex])
+	}, [currentChapterNum])
 
 	// internal handlers (execute here)
 

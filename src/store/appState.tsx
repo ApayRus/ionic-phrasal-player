@@ -6,13 +6,13 @@ class Store {
 		makeAutoObservable(this)
 	}
 
-	currentChapterIndex = -1
+	currentChapterNum = -1
 
 	chapters: Chapter[] = []
 	chaptersTr: Chapter[] = []
 
-	setCurrentChapterIndex(index: number) {
-		this.currentChapterIndex = index
+	setCurrentChapterNum(index: number) {
+		this.currentChapterNum = index
 	}
 	setChapters(chapters: Chapter[]) {
 		this.chapters = chapters
