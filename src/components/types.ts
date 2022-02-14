@@ -79,3 +79,16 @@ export interface Chapter {
 	end?: number
 	title: string
 }
+
+export interface Comment {
+	title: string
+	text: string
+}
+
+export interface Info {
+	topTitle?: string
+	title?: string
+	description?: string
+	mediaLink: string
+	translations: Array<{ [lang: string]: string }>
+}

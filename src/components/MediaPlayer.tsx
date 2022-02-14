@@ -64,6 +64,7 @@ const MediaPlayer: React.FC<PlayerProps> = props => {
 				? scrollPhrasesBlock(currentPhraseNum - 3, -2)
 				: scrollPhrasesBlock(currentPhraseNum, -2)
 		}
+		appState.setCurrentPhraseNum(currentPhraseNum)
 	}, [currentPhraseNum])
 
 	useEffect(() => {
